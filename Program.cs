@@ -1,94 +1,131 @@
 ﻿using System;
 
-namespace FirstWork
+namespace Matrix
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            while (true)
+            Console.WriteLine("Choose number task: ");
+            int task = int.Parse(Console.ReadLine());
+            int[,] matrix;
+            int[,] matrix2;
+            switch (task)
             {
-                Console.WriteLine("Enter number the task`s number:\t\t For exit tap 0");
-                int i = int.Parse(Console.ReadLine());
-                switch (i)
+                case 1:
+                    matrix = createMatrix();
+                    showMatrix(ref matrix);
+                    matrix2 = createMatrix();
+                    showMatrix(ref matrix2);
+                    int[,] matrixSum = sumMatrix(ref matrix, ref matrix2);
+                    showMatrix(ref matrixSum);
+                    break;
+                case 2:
+                    matrix = createMatrix();
+                    showMatrix(ref matrix);
+                    Console.Write("Enter number for mult on matrix: ");
+                    int number = int.Parse(Console.ReadLine());
+                    multMatrixOnNumber(ref matrix, ref number);
+                    showMatrix(ref matrix);
+                    break;
+                case 3:
+                    matrix = createMatrix();
+                    showMatrix(ref matrix);
+                    matrix2 = createMatrix();
+                    showMatrix(ref matrix2);
+                    int[,] matrixMult = multMatrix(ref matrix, ref matrix2);
+                    showMatrix(ref matrixMult);
+                    break;
+                default:
+                    Console.WriteLine("Error!");
+                    break;
+            }
+            Console.ReadKey();
+        }
+        static int[,] createMatrix()
+        {
+            Console.WriteLine("Enter numbers lines in matrix: ");
+            int line = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter numbers columns in matrix: ");
+            int column = int.Parse(Console.ReadLine());
+
+            int[,] matrix = new int[line, column];
+
+            for (int i = 0; i < matrix.GetLength(0); ++i)
+            {
+                for(int j = 0; j < matrix.GetLength(1); ++j)
                 {
-                    case 0:
-                        return;
-                    case 1:
-                        buzzFizz();
-                        break;
-                    case 2:
-                        countPercent();
-                        break;
-                    case 3:
-                        evenInteger();
-                        break;
-                    default:
-                        Console.WriteLine("This task isn`t complete.");
-                        break;
+                    Console.Write("\nEnter number by index (" + i + " : " + j + "): ");
+                    matrix[i, j] = int.Parse(Console.ReadLine());
                 }
             }
+            return matrix;
         }
-        static void buzzFizz()
+        static void showMatrix(ref int[,] matrix)
         {
-            Console.WriteLine("Enter number of 1 to 100:");
-            int number;
-            do
+            Console.WriteLine();
+            for (int i = 0; i < matrix.GetLength(0); ++i)
             {
-                number = int.Parse(Console.ReadLine());
-            } while (number < 1 || number > 100);
-            if (number % 3 == 0 && number % 5 == 0)
-            {
-                Console.WriteLine("Fizz and Buzz");
+                for (int j = 0; j < matrix.GetLength(1); ++j)
+                {
+                    Console.Write(matrix[i,j] + "\t");
+                }
+                Console.WriteLine();
             }
-            else if(number % 3 == 0)
+            Console.WriteLine();
+        }
+        static int[,] sumMatrix(ref int[,] firstMatrix, ref int[,] secondMatrix)
+        {
+            if(firstMatrix.GetLength(0) != secondMatrix.GetLength(0) || firstMatrix.GetLength(1) != secondMatrix.GetLength(1))
             {
-                Console.WriteLine("Fizz");
-            }
-            else if(number % 5 == 0) 
-            {
-                Console.WriteLine("Buzz");
+                Console.WriteLine("Your matrix don`t equal");
+                return new int[0,0];
             }
             else
             {
-                Console.WriteLine(number);
-            }
-        }
-        static void countPercent()
-        {
-            Console.WriteLine("Enter two numbers, first - number:");
-            double number, percent = 0;
-            number = double.Parse(Console.ReadLine());
-            Console.WriteLine("Second - percent of first");
-            do
-            {
-                percent = double.Parse(Console.ReadLine());
-            } while (percent < 1 || percent > 100);
-
-            double result = (number * percent) / 100;
-            Console.WriteLine(percent + " % of " + number + " = " + result);
-        }
-        static void evenInteger()
-        {
-            Console.WriteLine("Enter first number:");
-            int first, second;
-            first = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter second number:");
-            second = int.Parse(Console.ReadLine());
-            if (first < second)
-            {
-                second = second + first;
-                first = second - first;
-                second = second - first;
-            }
-            for(int i = second; i <= first; ++i)
-            {
-                if(i % 2 == 0)
+                int[,] matrixSum = new int[firstMatrix.GetLength(0), firstMatrix.GetLength(1)];
+                for (int i = 0; i < firstMatrix.GetLength(0); ++i)
                 {
-                    Console.Write(i + "\t");
+                    for (int j = 0; j < firstMatrix.GetLength(1); ++j)
+                    {
+                        matrixSum[i,j] = firstMatrix[i,j] + secondMatrix[i,j];
+                    }
+                }
+                return matrixSum;
+            }
+        }
+        static void multMatrixOnNumber(ref int[,] matrix, ref int number)
+        {
+            for (int i = 0; i < matrix.GetLength(0); ++i)
+            {
+                for (int j = 0; j < matrix.GetLength(1); ++j)
+                {
+                    matrix[i, j] *= number;
                 }
             }
-            Console.WriteLine();
+        }
+        static int[,] multMatrix(ref int[,] firstMatrix, ref int[,] secondMatrix)
+        {
+            if(firstMatrix.GetLength(0) == secondMatrix.GetLength(1)) 
+            {
+                int[,] multMatrix = new int[firstMatrix.GetLength(0), secondMatrix.GetLength(1)];
+                for (int i = 0; i < multMatrix.GetLength(0); ++i)
+                {
+                    for (int j = 0; j < secondMatrix.GetLength(1); ++j)
+                    {
+                        for (int k = 0; k < firstMatrix.GetLength(1); ++k)
+                        {
+                            multMatrix[i, j] += firstMatrix[i, k] * secondMatrix[k, j];
+                        }
+                    }
+                }
+                return multMatrix;
+            }
+            else
+            {
+                Console.WriteLine("These matrix can not mult");
+                return new int[0,0];
+            }
         }
     }
 }
